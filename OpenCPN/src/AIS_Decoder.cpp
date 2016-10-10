@@ -35,6 +35,7 @@
 //--Added by Chamal Perera---
 #include "MySqlVar.h"
 //---------------------------
+#include "Connectionlib.h"
 
 #if !defined(NAN)
 static const long long lNaN = 0xfff8000000000000;
@@ -106,6 +107,7 @@ wxString Previous_AIS_Query = _("select * from decoded_ais_data where last_recei
 wxString connected_db_ip;
 bool checkHistory = false;
 bool checkHistoryDone = false;
+
 
 //--SQL-------------------------------------------------------------------------------------------------
 
@@ -2642,6 +2644,7 @@ void AIS_Decoder::MySQL_DB_User()
 {
     wxMessageDialog *md;
 	FILE *fp;
+	ConnectionLib::Lib::init();
 
 	fp = fopen("AISList.txt", "a+");
     if (AIS_Query.Contains(_("lDT")))
@@ -2797,6 +2800,7 @@ void AIS_Decoder::MySQL_DB_User()
 				fprintf(fp, "%s", " Lat ");
 				fprintf(fp, "%f", pTargetData->Lat);
 				fprintf(fp, "%s", "\n");
+				char* buf = ConnectionLib::Lib::SendData(pTargetData->ShipName, pTargetData->MMSI, pTargetData->Lat, pTargetData->Lon);
 				
                 
                 //-anchorwatch---------------------
