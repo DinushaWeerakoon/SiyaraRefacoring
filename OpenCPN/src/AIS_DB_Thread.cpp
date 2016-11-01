@@ -1,5 +1,6 @@
 #include "AIS_DB_Thread.h"
 #include "MySqlVar.h"
+#include "ConnectionLib.h"
 
 //connectedToDB = false;
 //bool have_updated_data = false;
@@ -54,6 +55,7 @@ void *AIS_DB_Thread::Entry()
 		//-showpilotstationdata------------------
 
 		db_threads_parent->MySQL_DB_User();
+		//ConnectionLib::Lib::init();
 	}
 
 	return 0;

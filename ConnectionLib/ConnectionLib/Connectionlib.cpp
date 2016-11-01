@@ -1,6 +1,12 @@
 #include "Connectionlib.h"
 #include <winsock2.h>
+#include <iostream>
 #include <stdio.h>
+#include <string>
+#include <errno.h>
+#include <stdio.h>
+using namespace std;
+
 #pragma comment(lib,"ws2_32.lib") //Winsock Library
 namespace ConnectionLib{
 	// make a connection with tcp server
@@ -15,7 +21,19 @@ namespace ConnectionLib{
 	//char sendbuf[2048];
 	int BytesSent, nlen;
 
-	static void init(){
+	bool Lib::instanceFlag = false;
+	Lib* Lib::instance = NULL;
+	FILE *stream;
+	errno_t err= fopen_s(&stream, "list.txt", "a");
+
+	Lib* Lib::getInstance(){
+		if (!instanceFlag){
+			instance = new Lib();
+			instanceFlag = true;
+			return instance;
+		}
+	}
+	int  Lib::init(){
 
 		// Initialize Winsock version 2.2
 		WSAStartup(MAKEWORD(2, 2), &wsaData);
@@ -49,34 +67,47 @@ namespace ConnectionLib{
 		{
 			// Close the socket
 			closesocket(SendingSocket);
+			fprintf_s(stream, "%s\n", "socket closed error in connection");
 			// Do the clean up
 			WSACleanup();
 			// Exit with error
 			//return -1;
 		}
-
+		else{
+			fprintf_s(stream, "%s\n", "socket connected");
+		}
+		return RetCode;
 	}
 
 	// send data
-	static char* SendData(char name[], int mmsi, double lat, double lon){
-		//sendbuf = '{ "name":"'+John Johnson'", "mmsi" : "'+Oslo West 16+'", "lat" : "'+555 1234567+'", "lon" : "'+555 1234567+'" }';
-		char sendbuf[1024] = "This is a test string from sender";
-		BytesSent = send(SendingSocket, sendbuf, strlen(sendbuf), 0);
-
-		/*if (BytesSent == SOCKET_ERROR)
-			printf("Client: send() error %ld.\n", WSAGetLastError());
+	//pTargetData->MMSI, pTargetData->ShipName, pTargetData->Lon, pTargetData->Lat, pTargetData->ROTAIS, pTargetData->SOG, pTargetData->COG, pTargetData->Destination
+	int Lib::SendData(char name[], int mmsi, double lon, double lat){
+	//int Lib::SendData(char name[], int mmsi, double lon, double lat, int rot, double sog, double cog, char dest[]){
+		
+		
+		
+		char sendbuf[1024] = "Successfully";
+		std::string na = name;
+		std::string mm = to_string(mmsi);
+		std::string la = to_string(lat);
+		std::string lo = to_string(lon);
+		/*std::string de = dest;
+		std::string ro = to_string(rot);
+		std::string so = to_string(sog);
+		std::string co = to_string(cog);*/
+		std::string jsonObject = "{ \"name\":\"" + na + "\", \"mmsi\":\"" + mm + "\"lat\" : \"" + la + "\", \"lon\" : \"" + lo + "\"}";
+		//std::string jsonObject = "{ \"name\":\"" + na + "\", \"mmsi\":\"" + mm + "\"lat\" : \"" + la + "\", \"lon\" : \"" + lo + "\" , \"rot\" : \"" + ro + "\", \"sog\" : \"" + so + "\", \"cog\" : \"" + co + "\", \"destination\" : \"" + de + "\"}";
+		const char* jsonObj = jsonObject.c_str();
+		fprintf_s(stream, "%s", "ready to sent ");
+		BytesSent = send(SendingSocket, jsonObj, strlen(jsonObj), 0);
+		if (BytesSent == SOCKET_ERROR)
+			fprintf_s(stream,"Client: send() error %ld.\n", WSAGetLastError());
 		else
 		{
-			printf("Client: send() is OK - bytes sent: %ld\n", BytesSent);
-			// Some info on this sender side...
-			// Allocate the required resources
-			memset(&ThisSenderInfo, 0, sizeof(ThisSenderInfo));
-			nlen = sizeof(ThisSenderInfo);
-
-			getsockname(SendingSocket, (SOCKADDR *)&ThisSenderInfo, &nlen);
-			printf("Client: Sender IP(s) used: %s\n", inet_ntoa(ThisSenderInfo.sin_addr));
-			printf("Client: Sender port used: %d\n", htons(ThisSenderInfo.sin_port));
-			printf("Client: Those bytes represent: \"%s\"\n", sendbuf);
-		}*/
+			fprintf_s(stream, "%d\n", BytesSent);
+		}
+		fclose(stream);
+		return BytesSent;
+		
 	}
 }

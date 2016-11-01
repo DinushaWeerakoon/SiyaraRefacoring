@@ -1,20 +1,19 @@
-﻿Build started 10/8/2016 8:43:42 PM.
-     1>Project "C:\ProjectSE\ConnectionLib\ConnectionLib\ConnectionLib.vcxproj" on node 2 (Rebuild target(s)).
-     1>_PrepareForClean:
-         Deleting file "Debug\ConnectionLib.tlog\ConnectionLib.lastbuildstate".
-       InitializeBuildStatus:
+﻿Build started 11/1/2016 8:32:41 PM.
+     1>Project "C:\ProjectSE\ConnectionLib\ConnectionLib\ConnectionLib.vcxproj" on node 2 (Build target(s)).
+     1>InitializeBuildStatus:
          Creating "Debug\ConnectionLib.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
        ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /IC:\ProjectSE\ConnectionLib\lib /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Connectionlib.cpp
          Connectionlib.cpp
+     1>c:\projectse\connectionlib\connectionlib\connectionlib.cpp(35): warning C4715: 'ConnectionLib::Lib::getInstance' : not all control paths return a value
        Lib:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\Lib.exe /OUT:"C:\ProjectSE\ConnectionLib\Debug\ConnectionLib.lib" /NOLOGO Debug\Connectionlib.obj
          ConnectionLib.vcxproj -> C:\ProjectSE\ConnectionLib\Debug\ConnectionLib.lib
        FinalizeBuildStatus:
          Deleting file "Debug\ConnectionLib.tlog\unsuccessfulbuild".
          Touching "Debug\ConnectionLib.tlog\ConnectionLib.lastbuildstate".
-     1>Done Building Project "C:\ProjectSE\ConnectionLib\ConnectionLib\ConnectionLib.vcxproj" (Rebuild target(s)).
+     1>Done Building Project "C:\ProjectSE\ConnectionLib\ConnectionLib\ConnectionLib.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:02.03
+Time Elapsed 00:00:03.71

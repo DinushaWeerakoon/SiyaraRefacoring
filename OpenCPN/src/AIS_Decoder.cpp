@@ -35,13 +35,14 @@
 //--Added by Chamal Perera---
 #include "MySqlVar.h"
 //---------------------------
-#include "Connectionlib.h"
+#include <Connectionlib.h>
 
 #if !defined(NAN)
 static const long long lNaN = 0xfff8000000000000;
 #define NAN (*(double*)&lNaN)
 #endif
 
+#pragma comment(lib, "ConnectionLib")
 extern AISTargetAlertDialog *g_pais_alert_dialog_active;
 extern Select *pSelectAIS;
 extern Select *pSelect;
@@ -2644,9 +2645,13 @@ void AIS_Decoder::MySQL_DB_User()
 {
     wxMessageDialog *md;
 	FILE *fp;
-	ConnectionLib::Lib::init();
-
 	fp = fopen("AISList.txt", "a+");
+	//ConnectionLib::Lib::getInstance();
+	int val=ConnectionLib::Lib::init();
+	fprintf(fp, "%s", "CONNECTION ");
+	fprintf(fp, "%d", val);
+
+	
     if (AIS_Query.Contains(_("lDT")))
     {
         //if (!checkHistory&&!checkHistoryDone)
@@ -2764,8 +2769,13 @@ void AIS_Decoder::MySQL_DB_User()
                     bhad_name = pStaleTarget->b_nameValid;
                 
                 pTargetData->MMSI = mmsi;
-				
-				fprintf(fp, "%s", "MMSI ");
+				time_t _tm = time(NULL);
+
+				struct tm * curtime = localtime(&_tm);
+				fprintf(fp,asctime(curtime));
+				fprintf(fp, "%s", " Name ");
+				fprintf(fp, "%s", pTargetData->ShipName);
+				fprintf(fp, "%s", " MMSI ");
 				fprintf(fp, "%d", pTargetData->MMSI);
                 
                 if (row[1] != NULL)
@@ -2792,7 +2802,7 @@ void AIS_Decoder::MySQL_DB_User()
                 
                 if (row[4] != NULL)
                     pTargetData->Lon = atof(row[4]);    // Lon from DB
-				fprintf(fp, "%s", " Lat ");
+				fprintf(fp, "%s", " Lon ");
 				fprintf(fp, "%f", pTargetData->Lon);
                 
                 if (row[5] != NULL)
@@ -2800,8 +2810,8 @@ void AIS_Decoder::MySQL_DB_User()
 				fprintf(fp, "%s", " Lat ");
 				fprintf(fp, "%f", pTargetData->Lat);
 				fprintf(fp, "%s", "\n");
-				char* buf = ConnectionLib::Lib::SendData(pTargetData->ShipName, pTargetData->MMSI, pTargetData->Lat, pTargetData->Lon);
-				
+
+				//buf = ConnectionLib::Lib::SendData(pTargetData->ShipName, pTargetData->MMSI, pTargetData->Lat, pTargetData->Lon);
                 
                 //-anchorwatch---------------------
                 if (pTargetData->MMSI == AWmmsi1)
@@ -2948,7 +2958,13 @@ void AIS_Decoder::MySQL_DB_User()
                         pTargetData->StaticReportTicks = now.GetTicks();
                     }
                 }
-                
+				//pTargetData->MMSI, pTargetData->ShipName, pTargetData->Lon, pTargetData->Lat, pTargetData->ROTAIS, pTargetData->SOG, pTargetData->COG, pTargetData->db_reported_time, pTargetData->m_date_string, pTargetData->Destination
+				//int buf = ConnectionLib::Lib::SendData(pTargetData->ShipName,pTargetData->MMSI, pTargetData->Lon, pTargetData->Lat, pTargetData->ROTAIS, pTargetData->SOG, pTargetData->COG, pTargetData->Destination);
+				int buf = ConnectionLib::Lib::SendData(pTargetData->ShipName, pTargetData->MMSI, pTargetData->Lat, pTargetData->Lon);
+
+				fprintf(fp, "%s", "bytes ");
+				fprintf(fp, "%d", buf);
+				fprintf(fp, "%s", "\n");
                 pTargetData->b_active = true;
                 pTargetData->b_lost = false;
                 
