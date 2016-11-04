@@ -4841,6 +4841,7 @@ bool ChartCanvas::MouseEventProcessObjects( wxMouseEvent& event )
             if( g_pAIS->Get_Target_Data_From_MMSI( m_FoundAIS_MMSI ) ) {
                 wxWindow *pwin = wxDynamicCast(this, wxWindow);
                 ShowAISTargetQueryDialog( pwin, m_FoundAIS_MMSI );
+				wxLogMessage(_("testtt"));
             }
             return true;
         }

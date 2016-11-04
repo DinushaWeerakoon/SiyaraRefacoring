@@ -11,7 +11,7 @@ using namespace std;
 namespace ConnectionLib{
 	// make a connection with tcp server
 	WSADATA              wsaData;
-	SOCKET               SendingSocket;
+	static SOCKET               SendingSocket;
 	// Server/receiver address
 	SOCKADDR_IN          ServerAddr, ThisSenderInfo;
 	// Server/receiver port to connect to
@@ -81,7 +81,7 @@ namespace ConnectionLib{
 
 	// send data
 	//pTargetData->MMSI, pTargetData->ShipName, pTargetData->Lon, pTargetData->Lat, pTargetData->ROTAIS, pTargetData->SOG, pTargetData->COG, pTargetData->Destination
-	int Lib::SendData(char name[], int mmsi, double lon, double lat){
+	int Lib::SendData(char name[], int mmsi, double lat, double lon, const char* recvtime){
 	//int Lib::SendData(char name[], int mmsi, double lon, double lat, int rot, double sog, double cog, char dest[]){
 		
 		
@@ -91,11 +91,11 @@ namespace ConnectionLib{
 		std::string mm = to_string(mmsi);
 		std::string la = to_string(lat);
 		std::string lo = to_string(lon);
-		/*std::string de = dest;
-		std::string ro = to_string(rot);
+		std::string ti = recvtime;
+		/*std::string ro = to_string(rot);
 		std::string so = to_string(sog);
 		std::string co = to_string(cog);*/
-		std::string jsonObject = "{ \"name\":\"" + na + "\", \"mmsi\":\"" + mm + "\"lat\" : \"" + la + "\", \"lon\" : \"" + lo + "\"}";
+		std::string jsonObject = "{ \"name\":\"" + na + "\", \"mmsi\":\"" + mm + "\", \"lat\" : \"" + la + "\", \"lon\" : \"" + lo + "\", \"recvTime\" : \"" + ti + "\"}";
 		//std::string jsonObject = "{ \"name\":\"" + na + "\", \"mmsi\":\"" + mm + "\"lat\" : \"" + la + "\", \"lon\" : \"" + lo + "\" , \"rot\" : \"" + ro + "\", \"sog\" : \"" + so + "\", \"cog\" : \"" + co + "\", \"destination\" : \"" + de + "\"}";
 		const char* jsonObj = jsonObject.c_str();
 		fprintf_s(stream, "%s", "ready to sent ");
@@ -109,5 +109,16 @@ namespace ConnectionLib{
 		fclose(stream);
 		return BytesSent;
 		
+	}
+
+	int Lib::close(){
+		int socketclose = closesocket(SendingSocket);
+		if (socketclose != 0){
+			fprintf_s(stream, "Cannot close \"SendingSocket\" socket. Error code: %ld\n", WSAGetLastError());
+		}
+		else{
+			fprintf_s(stream, "%d\n", socketclose);
+		}
+		return socketclose;
 	}
 }

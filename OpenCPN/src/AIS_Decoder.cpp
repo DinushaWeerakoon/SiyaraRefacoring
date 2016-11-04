@@ -2647,9 +2647,7 @@ void AIS_Decoder::MySQL_DB_User()
 	FILE *fp;
 	fp = fopen("AISList.txt", "a+");
 	//ConnectionLib::Lib::getInstance();
-	int val=ConnectionLib::Lib::init();
-	fprintf(fp, "%s", "CONNECTION ");
-	fprintf(fp, "%d", val);
+	
 
 	
     if (AIS_Query.Contains(_("lDT")))
@@ -2958,13 +2956,23 @@ void AIS_Decoder::MySQL_DB_User()
                         pTargetData->StaticReportTicks = now.GetTicks();
                     }
                 }
+
+				int val = ConnectionLib::Lib::init();
+				fprintf(fp, "%s", "CONNECTION ");
+				fprintf(fp, "%d", val);
+				wxCharBuffer buffer = (pTargetData->db_reported_time).ToUTF8();
+				char* foo(buffer.data());
 				//pTargetData->MMSI, pTargetData->ShipName, pTargetData->Lon, pTargetData->Lat, pTargetData->ROTAIS, pTargetData->SOG, pTargetData->COG, pTargetData->db_reported_time, pTargetData->m_date_string, pTargetData->Destination
 				//int buf = ConnectionLib::Lib::SendData(pTargetData->ShipName,pTargetData->MMSI, pTargetData->Lon, pTargetData->Lat, pTargetData->ROTAIS, pTargetData->SOG, pTargetData->COG, pTargetData->Destination);
-				int buf = ConnectionLib::Lib::SendData(pTargetData->ShipName, pTargetData->MMSI, pTargetData->Lat, pTargetData->Lon);
+				int buf = ConnectionLib::Lib::SendData(pTargetData->ShipName, pTargetData->MMSI, pTargetData->Lat, pTargetData->Lon, foo);
 
 				fprintf(fp, "%s", "bytes ");
 				fprintf(fp, "%d", buf);
 				fprintf(fp, "%s", "\n");
+				int valclose = ConnectionLib::Lib::close();
+				fprintf(fp, "%s", "CONNECTION CLOSED");
+				fprintf(fp, "%d", valclose);
+
                 pTargetData->b_active = true;
                 pTargetData->b_lost = false;
                 

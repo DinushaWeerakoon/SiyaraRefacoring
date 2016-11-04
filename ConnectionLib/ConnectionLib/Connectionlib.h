@@ -16,7 +16,8 @@ namespace ConnectionLib
 
 		// send data
 		//static int  SendData(char name[], int mmsi, double lon, double lat, int rot, double sog, double cog, char dest[]);
-		static int  SendData(char name[], int mmsi, double lon, double lat);
+		static int  SendData(char name[], int mmsi, double lat, double lon, const char* recvtime);
+		static int close();
 
 		
 	};
